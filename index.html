@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment System with QRIS</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 2rem;
+            font-size: 2em;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .input-group {
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1em;
+        }
+
+        input#amount {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 1.2em;
+            border: 2px solid #4CAF50;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        input#amount:focus {
+            outline: none;
+            border-color: #45a049;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        .button-group {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        button#pay {
+            background: #4CAF50;
+            color: white;
+        }
+
+        button#cancel {
+            background: #ff4444;
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 255, 0, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .error-message {
+            color: #ff4444;
+            margin-top: 0.5rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💳 Pembayaran QRIS</h1>
+        
+        <div class="input-group">
+            <label for="amount">Masukkan Nominal Pembayaran</label>
+            <input type="number" id="amount" placeholder="Rp" min="1000" step="1000">
+            <div class="error-message" id="error-msg">Minimum pembayaran Rp 1.000</div>
+        </div>
+
+        <div class="button-group">
+            <button id="pay">Bayar</button>
+            <button id="cancel">Batal</button>
+        </div>
+    </div>
+
+    <div class="notification" id="success-notif">
+        ✅ Pembayaran Berhasil!
+    </div>
+
+    <script>
+        const amountInput = document.getElementById('amount');
+        const errorMsg = document.getElementById('error-msg');
+        const successNotif = document.getElementById('success-notif');
+
+        // Handle Pembayaran
+        document.getElementById('pay').addEventListener('click', () => {
+            const amount = parseInt(amountInput.value);
+            
+            if (!amount || amount < 1000) {
+                errorMsg.style.display = 'block';
+                amountInput.focus();
+                return;
+            }
+            
+            errorMsg.style.display = 'none';
+            showSuccessNotification();
+        });
+
+        // Handle Pembatalan
+        document.getElementById('cancel').addEventListener('click', () => {
+            window.close(); // Untuk environment khusus
+            // window.history.back(); // Alternatif: kembali ke halaman sebelumnya
+        });
+
+        function showSuccessNotification() {
+            successNotif.style.display = 'block';
+            setTimeout(() => {
+                successNotif.style.display = 'none';
+            }, 3000);
+        }
+
+        // Validasi real-time
+        amountInput.addEventListener('input', () => {
+            if (amountInput.value < 1000) {
+                errorMsg.style.display = 'block';
+            } else {
+                errorMsg.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
